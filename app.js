@@ -3,6 +3,9 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+var bodyParser = require("body-parser");
+
+// mở kết nối database
 var db = require("./models/database");
 db.authenticate()
   .then(() => console.log("connected"))
@@ -25,6 +28,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+
+// Cấu hình body-parser middleware
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);

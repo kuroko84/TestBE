@@ -28,21 +28,27 @@ router.get("/tatca", function (req, res, next) {
     })
     .catch((err) => console.log(err));
 });
-// router.post("/themcuahang", function (req, res, next) {
-//   Cuahangs.create({
-//     macch: "MACCH001",
-//     tencuahang: "Cửa hàng A",
-//     diachi: "Địa chỉ A",
-//     sdt: "0123456789",
-//     email: "email@example.com",
-//     anhlogo: "path/to/logo.jpg",
-//   })
-//     .then((cuahang) => {
-//       console.log("Thêm dữ liệu thành công:", cuahang);
-//     })
-//     .catch((error) => {
-//       console.error("Thêm dữ liệu thất bại:", error);
-//     });
-// });
+// Route POST /themcuahang
+
+router.post("/themcuahang", function (req, res, next) {
+  const { macch, tencuahang, diachi, sdt, email, anhlogo } = req.body;
+
+  CuaHang.create({
+    macch: macch,
+    tencuahang: tencuahang,
+    diachi: diachi,
+    sdt: sdt,
+    email: email,
+    anhlogo: anhlogo,
+  })
+    .then((cuahang) => {
+      console.log("Thêm dữ liệu thành công:", cuahang);
+      res.status(201).json(cuahang); // Trả về dữ liệu đã tạo thành công
+    })
+    .catch((error) => {
+      console.error("Thêm dữ liệu thất bại:", error);
+      res.status(500).json({ error: "Thêm dữ liệu thất bại" }); // Trả về lỗi nếu có
+    });
+});
 
 module.exports = router;
