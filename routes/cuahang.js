@@ -13,7 +13,7 @@ var router = express.Router();
 //   port: 5432, // default PostgreSQL port
 // });
 
-/* GET cuahang. */
+/* GET tat ca cua hang */
 router.get("/tatca", function (req, res, next) {
   //   pool.query("SELECT * FROM cuahang", (error, results) => {
   //     if (error) {
@@ -28,8 +28,8 @@ router.get("/tatca", function (req, res, next) {
     })
     .catch((err) => console.log(err));
 });
-// Route POST /themcuahang
 
+/* POST them cua hang*/
 router.post("/themcuahang", function (req, res, next) {
   const { macch, tencuahang, diachi, sdt, email, anhlogo } = req.body;
 
@@ -47,7 +47,9 @@ router.post("/themcuahang", function (req, res, next) {
     })
     .catch((error) => {
       console.error("Thêm dữ liệu thất bại:", error);
-      res.status(500).json({ error: "Thêm dữ liệu thất bại" }); // Trả về lỗi nếu có
+      res
+        .status(500)
+        .json({ error: "Thêm dữ liệu thất bại" + error, err: error }); // Trả về lỗi nếu có
     });
 });
 
