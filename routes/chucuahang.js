@@ -1,11 +1,11 @@
 var express = require("express");
 const db = require("../models/database");
-const CuaHang = require("../models/ChuCuaHang");
+const ChuCuaHang = require("../models/ChuCuaHang");
 
 var router = express.Router();
 /* GET tat ca chu cua hang. */
 router.get("/tatca", function (req, res, next) {
-  CuaHang.findAll()
+  ChuCuaHang.findAll()
     .then((data) => {
       console.log(data);
       res.json(data);
@@ -17,7 +17,7 @@ router.get("/tatca", function (req, res, next) {
 router.post("/themchucuahang", function (req, res, next) {
   const { hoten, diachi, sdt, email, gioitinh, anhdaidien } = req.body;
 
-  CuaHang.create({
+  ChuCuaHang.create({
     hoten: hoten,
     diachi: diachi,
     sdt: sdt,
