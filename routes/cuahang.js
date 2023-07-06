@@ -1,6 +1,7 @@
 var express = require("express");
 const db = require("../models/database");
 const CuaHang = require("../models/CuaHang");
+const ChuCuaHang = require("../models/ChuCuaHang");
 
 var router = express.Router();
 
@@ -27,6 +28,30 @@ router.get("/tatca", function (req, res, next) {
       res.json(data);
     })
     .catch((err) => console.log(err));
+});
+
+/* Get cửa hàng theo mã chủ cửa hàng */
+router.get("/timkiem/:macch", function (req, res, next) {
+  const macch = req.params.macch;
+  CuaHang.findAll({
+    include: {
+      model: ChuCuaHang,
+      where: { id: macch },
+    },
+  })
+    .then((data) => {
+      if (data) {
+        console.log("Tìm kiếm thành công:", data);
+        res.status(200).json(data);
+      } else {
+        console.log("Không tìm thấy nhân viên với số điện thoại:", sdt);
+        res.status(404).json({ error: "Không tìm thấy nhân viên" });
+      }
+    })
+    .catch((error) => {
+      console.error("Lỗi tìm kiếm:", error);
+      res.status(500).json({ error: "Lỗi tìm kiếm" });
+    });
 });
 
 /* POST them cua hang*/

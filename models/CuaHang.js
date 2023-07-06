@@ -1,5 +1,6 @@
 const Sequelize = require("sequelize");
 const db = require("./database");
+const ChuCuaHang = require("./ChuCuaHang");
 
 const CuaHang = db.define("cuahang", {
   macch: Sequelize.INTEGER,
@@ -10,5 +11,8 @@ const CuaHang = db.define("cuahang", {
   email: Sequelize.STRING,
   anhlogo: Sequelize.STRING,
 });
+
+ChuCuaHang.hasMany(CuaHang, { foreignKey: "macch" });
+CuaHang.belongsTo(ChuCuaHang, { foreignKey: "macch" });
 
 module.exports = CuaHang;

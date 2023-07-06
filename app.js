@@ -16,6 +16,7 @@ var usersRouter = require("./routes/users");
 var cuahangRouter = require("./routes/cuahang");
 var chucuahangRouter = require("./routes/chucuahang");
 var nguoilamRouter = require("./routes/nguoilam");
+var yeucauRouter = require("./routes/yeucaulamviec");
 
 var app = express();
 
@@ -38,6 +39,7 @@ app.use("/users", usersRouter);
 app.use("/cuahang", cuahangRouter);
 app.use("/chucuahang", chucuahangRouter);
 app.use("/nguoilam", nguoilamRouter);
+app.use("/yeucau", yeucauRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

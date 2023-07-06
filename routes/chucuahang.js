@@ -35,4 +35,13 @@ router.post("/themchucuahang", function (req, res, next) {
     });
 });
 
+/* Get tim nhanvientheocuahang */
+// router.get("/tatca", function (req, res, next) {
+//   ChuCuaHang.findAll()
+//     .then((data) => {
+//       console.log(data);
+//       res.json(data);
+//     })
+//     .catch((err) => console.log(err));
+// });
 module.exports = router;
