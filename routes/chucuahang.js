@@ -46,10 +46,12 @@ router.get("/denghi", function (req, res, next) {
 
 /* POST them chu cua hang. */
 router.post("/themchucuahang", function (req, res, next) {
-  const { hoten, diachi, sdt, email, gioitinh, anhdaidien } = req.body;
+  const { hoten, ngaysinh, diachi, sdt, email, gioitinh, anhdaidien } =
+    req.body;
 
   ChuCuaHang.create({
     hoten: hoten,
+    ngaysinh: ngaysinh,
     diachi: diachi,
     sdt: sdt,
     email: email,
