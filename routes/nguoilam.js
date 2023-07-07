@@ -60,27 +60,45 @@ router.get("/denghi/:manl", function (req, res, next) {
 
 /* POST chấp nhận đề nghị*/
 router.post("/chapnhandenghi", function (req, res, next) {
-  const { mayeucau } = req.body;
-  const yeucau_chapnhan = YeuCau.findOne({
-    where: { id: mayeucau },
-  })
-    .then((data) => {
-      YeuCau.update({ trangthai: "huy" }, { where: { manl: data.manl } });
-      //cập nhật lại yêu cầu trùng với đề nghị
-      YeuCau.update({ trangthai: "lamviec" }, { where: { id: mayeucau } })
-        .then((data) => {
-          console.log("Đã chấp nhận đề nghị", data);
-          res.status(201).json(data); // Trả về dữ liệu đã tạo thành công
-        })
-        .catch((err) => {
-          console.log(err);
-          res.status(500).json({ error: "Thêm dữ liệu thất bại" }); // Trả về lỗi nếu có);
-        });
+  //phản hồi
+  //phanhoi = 1 nếu chấp nhận đề nghị
+  //phanhoi = 0 nế từ chói đề nghị
+  const { mayeucau, phanhoi } = req.body;
+  if (phanhoi) {
+    YeuCau.findOne({
+      where: { id: mayeucau },
     })
-    .catch((error) => {
-      console.error("Thêm dữ liệu thất bại:", error);
-      res.status(500).json({ error: "Thêm dữ liệu thất bại" }); // Trả về lỗi nếu có
-    });
+      .then((data) => {
+        YeuCau.update({ trangthai: "huy" }, { where: { manl: data.manl } });
+        //cập nhật lại yêu cầu trùng với đề nghị
+        YeuCau.update({ trangthai: "lamviec" }, { where: { id: mayeucau } })
+          .then((data) => {
+            console.log("Đã chấp nhận đề nghị", data);
+            res.status(201).json(data); // Trả về dữ liệu đã tạo thành công
+          })
+          .catch((err) => {
+            console.log(err);
+            res.status(500).json({ error: "Thêm dữ liệu thất bại" }); // Trả về lỗi nếu có);
+          });
+      })
+      .catch((error) => {
+        console.error("Thêm dữ liệu thất bại:", error);
+        res.status(500).json({ error: "Thêm dữ liệu thất bại" }); // Trả về lỗi nếu có
+      });
+  } else {
+    YeuCau.findOne({
+      where: { id: mayeucau },
+    })
+      .then((data) => {
+        YeuCau.update({ trangthai: "huy" }, { where: { manl: data.manl } });
+        onsole.log("Đã huỷ đề nghị", data);
+        res.status(201).json(data); // Cập nhật thành
+      })
+      .catch((error) => {
+        console.error("Điều chỉnh dữ liệu thất bại:", error);
+        res.status(500).json({ error: "Điều chỉnh dữ liệu thất bại" }); // Trả về lỗi nếu có
+      });
+  }
 });
 
 /* POST thêm người làm. */

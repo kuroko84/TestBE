@@ -133,19 +133,33 @@ router.post("/guidenghi", function (req, res, next) {
     });
 });
 
-/* POST chấp nhận yêu cầu. */
-router.post("/chapnhanyeucau/:mayeucau", function (req, res, next) {
-  const mayeucau = req.params.mayeucau;
-
-  YeuCau.update({ trangthai: "lamviec" }, { where: { id: mayeucau } })
-    .then((data) => {
-      console.log("Thêm dữ liệu thành công:", data);
-      res.status(201).json(data); // Trả về dữ liệu đã tạo thành công
-    })
-    .catch((error) => {
-      console.error("Thêm dữ liệu thất bại:", error);
-      res.status(500).json({ error: "Thêm dữ liệu thất bại" }); // Trả về lỗi nếu có
-    });
+/* POST phản hồi yêu cầu. */
+router.post("/phanhoi", function (req, res, next) {
+  //phản hồi :
+  //phanhoi = 1 nếu chấp nhận yêu cầu
+  //phanhoi = 0 nếu từ chối yêu cầu
+  const { mayeucau, phanhoi } = req.body;
+  if (phanhoi) {
+    YeuCau.update({ trangthai: "lamviec" }, { where: { id: mayeucau } })
+      .then((data) => {
+        console.log("Cập nhật dữ liệu thành công:", data);
+        res.status(201).json(data); // Trả về dữ liệu đã tạo thành công
+      })
+      .catch((error) => {
+        console.error("Thêm dữ liệu thất bại:", error);
+        res.status(500).json({ error: "Thêm dữ liệu thất bại" }); // Trả về lỗi nếu có
+      });
+  } else {
+    YeuCau.update({ trangthai: "huy" }, { where: { id: mayeucau } })
+      .then((data) => {
+        console.log("Cập nhật dữ liệu thành công:", data);
+        res.status(201).json(data); // Trả về dữ liệu đã tạo thành công
+      })
+      .catch((error) => {
+        console.error("Thêm dữ liệu thất bại:", error);
+        res.status(500).json({ error: "Thêm dữ liệu thất bại" }); // Trả về lỗi nếu có
+      });
+  }
 });
 
 module.exports = router;
