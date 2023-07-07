@@ -39,6 +39,36 @@ router.get("/timkiem/:sdt", function (req, res, next) {
     });
 });
 
+/* Get đề nghị theo manl*/
+router.get("/denghi/:manl", function (req, res, next) {
+  const manl = req.params.manl;
+  YeuCau.findAll({
+    where: {
+      trangthai: "denghi",
+      manl: manl,
+    },
+  })
+    .then((data) => {
+      console.log("Thêm dữ liệu thành công:", data);
+      res.status(201).json(data); // Tìm tạo thành công
+    })
+    .catch((error) => {
+      console.error("Thêm dữ liệu thất bại:", error);
+      res.status(500).json({ error: "Thêm dữ liệu thất bại" }); // Trả về lỗi nếu có
+    });
+});
+
+/* POST chấp nhận đề nghị*/
+router.post("/chapnhandenghi", function (req, res, next) {
+  const { mayeucau } = req.body;
+  YeuCau.update({ trangthai: "lamviec" }, { where: { id: mayeucau } })
+    .then((data) => {
+      console.log("Đã chấp nhận đề nghị", data);
+      res.json(data);
+    })
+    .catch((err) => console.log(err));
+});
+
 /* POST thêm người làm. */
 router.post("/themnguoilam", function (req, res, next) {
   const { hoten, diachi, sdt, email, ngaysinh, gioitinh, anhdaidien } =
