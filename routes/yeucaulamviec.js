@@ -12,4 +12,7 @@ router.get("/tatca", function (req, res, next) {
     })
     .catch((err) => console.log(err));
 });
+
+/* GET  */
+
 module.exports = router;
