@@ -34,10 +34,7 @@ router.get("/tatca", function (req, res, next) {
 router.get("/timkiem/:macch", function (req, res, next) {
   const macch = req.params.macch;
   CuaHang.findAll({
-    include: {
-      model: ChuCuaHang,
-      where: { id: macch },
-    },
+    where: { macch: macch },
   })
     .then((data) => {
       if (data) {

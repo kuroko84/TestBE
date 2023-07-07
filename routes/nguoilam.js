@@ -1,6 +1,9 @@
 var express = require("express");
 const db = require("../models/database");
 const NguoiLam = require("../models/NguoiLam");
+const YeuCau = require("../models/YeuCauLamViec");
+const CuaHang = require("../models/CuaHang");
+const { Op } = require("sequelize");
 
 var router = express.Router();
 
@@ -57,6 +60,48 @@ router.post("/themnguoilam", function (req, res, next) {
     .catch((error) => {
       console.error("Thêm dữ liệu thất bại:", error);
       res.status(500).json({ error: "Thêm dữ liệu thất bại" }); // Trả về lỗi nếu có
+    });
+});
+
+/* POST gửi yêu cầu làm việc  */
+router.post("/guiyeucau", function (req, res, next) {
+  const { macuahang, manl } = req.body;
+  const trangthai = "yeucau";
+  const tt1 = "yeucau";
+  const tt2 = "denghi";
+  const tt3 = "lamviec";
+  //nếu đã tồn tại trong yêu cầu làm việc thì không thêm mới, ngược lại tạo mới 1 yêu cầu
+  const yeucau = YeuCau.findOne({
+    where: {
+      [Op.or]: [{ trangthai: tt1 }, { trangthai: tt2 }, { trangthai: tt3 }],
+      manl: manl,
+      macuahang: macuahang,
+    },
+  })
+    .then((data) => {
+      console.log("Tìm dữ liệu thành công:", data);
+      if (!data) {
+        YeuCau.create({
+          macuahang: macuahang,
+          manl: manl,
+          trangthai: trangthai,
+        })
+          .then((data) => {
+            console.log("Thêm dữ liệu thành công:", data);
+            res.status(201).json(data); // Trả về dữ liệu đã tạo thành công
+          })
+          .catch((error) => {
+            console.error("Thêm dữ liệu thất bại:", error);
+            res.status(500).json({ error: "Thêm dữ liệu thất bại" }); // Trả về lỗi nếu có
+          });
+      } else {
+        console.log("Đã Tồn Tại");
+        res.status(201).json(data); // Trả về dữ liệu đã tạo thành công
+      }
+    })
+    .catch((error) => {
+      console.error("Tìm dữ liệu thất bại:", error);
+      res.status(500).json({ error: "Tìm dữ liệu thất bại" }); // Trả về lỗi nếu có
     });
 });
 
