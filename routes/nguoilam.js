@@ -70,16 +70,10 @@ router.post("/guiyeucau", function (req, res, next) {
   const tt1 = "yeucau";
   const tt2 = "denghi";
   const tt3 = "lamviec";
-  const tt4 = "huy";
   //nếu đã tồn tại trong yêu cầu làm việc thì không thêm mới, ngược lại tạo mới 1 yêu cầu
   const yeucau = YeuCau.findOne({
     where: {
-      [Op.or]: [
-        { trangthai: tt1 },
-        { trangthai: tt2 },
-        { trangthai: tt3 },
-        { trangthai: tt4 },
-      ],
+      [Op.or]: [{ trangthai: tt1 }, { trangthai: tt2 }, { trangthai: tt3 }],
       manl: manl,
       macuahang: macuahang,
     },
