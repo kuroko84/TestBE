@@ -162,4 +162,41 @@ router.post("/phanhoi", function (req, res, next) {
   }
 });
 
+/* POST chấm dứt hợp đồng */
+router.post("/chamduthopdong", function (req, res, next) {
+  const { manl } = req.body;
+  YeuCau.findOne({
+    where: {
+      manl: manl,
+      trangthai: "lamviec",
+    },
+  })
+    .then((data) => {
+      if (data) {
+        trangthainl = data.trangthai;
+      } else {
+        trangthainl = 0;
+      }
+
+      if (trangthainl == "lamviec") {
+        YeuCau.update({ trangthai: "huy" }, { where: { manl: manl } })
+          .then((data) => {
+            console.log("Cập nhật dữ liệu thành công:", data);
+            res.status(201).json(data); // Trả về dữ liệu đã tạo thành công
+          })
+          .catch((error) => {
+            console.error("Thêm dữ liệu thất bại:", error);
+            res.status(500).json({ error: "Thêm dữ liệu thất bại" }); // Trả về lỗi nếu có
+          });
+      } else {
+        console.log("Nhân viên chưa có việc làm");
+        res.status(404).json({ error: "Sửa dữ liệu thất bại" }); // Trả về lỗi nếu có
+      }
+    })
+    .catch((error) => {
+      console.error("Cập nhật liệu thất bại:", error);
+      res.status(500).json({ error: "Thêm dữ liệu thất bại" }); // Trả về lỗi nếu có
+    });
+});
+
 module.exports = router;
