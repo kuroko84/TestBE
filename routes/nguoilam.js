@@ -61,12 +61,26 @@ router.get("/denghi/:manl", function (req, res, next) {
 /* POST chấp nhận đề nghị*/
 router.post("/chapnhandenghi", function (req, res, next) {
   const { mayeucau } = req.body;
-  YeuCau.update({ trangthai: "lamviec" }, { where: { id: mayeucau } })
+  const yeucau_chapnhan = YeuCau.findOne({
+    where: { id: mayeucau },
+  })
     .then((data) => {
-      console.log("Đã chấp nhận đề nghị", data);
-      res.json(data);
+      YeuCau.update({ trangthai: "huy" }, { where: { manl: data.manl } });
+      //cập nhật lại yêu cầu trùng với đề nghị
+      YeuCau.update({ trangthai: "lamviec" }, { where: { id: mayeucau } })
+        .then((data) => {
+          console.log("Đã chấp nhận đề nghị", data);
+          res.status(201).json(data); // Trả về dữ liệu đã tạo thành công
+        })
+        .catch((err) => {
+          console.log(err);
+          res.status(500).json({ error: "Thêm dữ liệu thất bại" }); // Trả về lỗi nếu có);
+        });
     })
-    .catch((err) => console.log(err));
+    .catch((error) => {
+      console.error("Thêm dữ liệu thất bại:", error);
+      res.status(500).json({ error: "Thêm dữ liệu thất bại" }); // Trả về lỗi nếu có
+    });
 });
 
 /* POST thêm người làm. */
