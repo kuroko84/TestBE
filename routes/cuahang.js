@@ -26,10 +26,19 @@ router.get("/tatca", function (req, res, next) {
   //   });
   CuaHang.findAll()
     .then((data) => {
-      console.log(data);
-      res.json(data);
+      console.log("Tìm kiếm thành công");
+      res.status(200).json({
+        M: "Tìm kiếm thành công",
+        D: data,
+      });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log("Lỗi tìm kiếm");
+      res.status(500).json({
+        M: "Lỗi tìm kiếm",
+        E: err,
+      });
+    });
 });
 
 /* Get cửa hàng theo mã chủ cửa hàng */
@@ -39,17 +48,23 @@ router.get("/timkiem/:macch", function (req, res, next) {
     where: { macch: macch },
   })
     .then((data) => {
-      if (data) {
-        console.log("Tìm kiếm thành công:", data);
-        res.status(200).json(data);
+      if (data != "") {
+        console.log("Tìm kiếm thành công");
+        res.status(200).json({
+          M: "Tìm kiếm thành công",
+          D: data,
+        });
       } else {
-        console.log("Không tìm thấy nhân viên với số điện thoại:", sdt);
-        res.status(404).json({ error: "Không tìm thấy nhân viên" });
+        console.log("Không tìm thấy cửa hàng có mã chủ cửa hàng:", macch);
+        res.status(404).json({
+          M: "Không tìm thấy",
+          E: "Không tìm thấy cửa hàng có mã chủ cửa hàng" + macch,
+        });
       }
     })
     .catch((error) => {
       console.error("Lỗi tìm kiếm:", error);
-      res.status(500).json({ error: "Lỗi tìm kiếm" });
+      res.status(500).json({ M: "Lỗi tìm kiếm", E: error });
     });
 });
 /* GET Tìm nhân viên theo cửa hàng */
@@ -59,24 +74,43 @@ router.get("/nhanviencuahang/:macuahang", function (req, res, next) {
     where: { macuahang: macuahang, trangthai: "lamviec" },
   })
     .then((data) => {
-      const promises = data.map((element) => {
-        return NguoiLam.findOne({
-          where: {
-            id: element.manl,
-          },
+      if (data) {
+        const promises = data.map((element) => {
+          return NguoiLam.findOne({
+            where: {
+              id: element.manl,
+            },
+          });
         });
-      });
 
-      return Promise.all(promises);
+        return Promise.all(promises);
+      } else {
+        console.log("Không tìm nhân viên có mã cửa hàng: ", macuahang);
+        res.status(404).json({
+          M: "Không tìm thấy",
+          E: "Không tìm nhân viên có mã cửa hàng: " + macuahang,
+        });
+      }
     })
     .then((results) => {
       const danhsachnhanvien = results.filter((nguoilam) => nguoilam !== null);
-      console.log(danhsachnhanvien);
-      res.status(200).json(danhsachnhanvien);
+      if (results != "") {
+        console.log("Tìm kiếm thành công");
+        res.status(200).json({
+          M: "Tìm kiếm thành công",
+          D: results,
+        });
+      } else {
+        console.log("Không tìm nhân viên có mã cửa hàng: ", macuahang);
+        res.status(404).json({
+          M: "Không tìm thấy",
+          E: "Không tìm nhân viên có mã cửa hàng: " + macuahang,
+        });
+      }
     })
     .catch((error) => {
-      console.error("Tìm dữ liệu thất bại:", error);
-      res.status(500).json({ error: "Thêm dữ liệu thất bại" });
+      console.error("Lỗi tìm kiếm:", error);
+      res.status(500).json({ M: "Lỗi tìm kiếm", E: error });
     });
 });
 /* POST them cua hang*/
@@ -91,15 +125,16 @@ router.post("/themcuahang", function (req, res, next) {
     email: email,
     anhlogo: anhlogo,
   })
-    .then((cuahang) => {
-      console.log("Thêm dữ liệu thành công:", cuahang);
-      res.status(201).json(cuahang); // Trả về dữ liệu đã tạo thành công
+    .then((data) => {
+      console.log("Thêm dữ liệu thành công");
+      res.status(201).json({
+        M: "Thêm dữ liệu thành công",
+        D: data,
+      });
     })
     .catch((error) => {
-      console.error("Thêm dữ liệu thất bại:", error);
-      res
-        .status(500)
-        .json({ error: "Thêm dữ liệu thất bại" + error, err: error }); // Trả về lỗi nếu có
+      console.error("Thêm dữ liệu thất bại");
+      res.status(500).json({ M: "Thêm dữ liệu thất bại", E: error });
     });
 });
 
