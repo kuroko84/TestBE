@@ -1,5 +1,5 @@
 var express = require("express");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const db = require("../models/database");
 const ChuCuaHang = require("../models/ChuCuaHang");
 const NguoiLam = require("../models/NguoiLam");
@@ -148,13 +148,4 @@ router.post("/chapnhanyeucau/:mayeucau", function (req, res, next) {
     });
 });
 
-/* Get tim nhanvientheocuahang */
-// router.get("/tatca", function (req, res, next) {
-//   ChuCuaHang.findAll()
-//     .then((data) => {
-//       console.log(data);
-//       res.json(data);
-//     })
-//     .catch((err) => console.log(err));
-// });
 module.exports = router;

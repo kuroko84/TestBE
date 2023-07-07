@@ -2,6 +2,8 @@ var express = require("express");
 const db = require("../models/database");
 const CuaHang = require("../models/CuaHang");
 const ChuCuaHang = require("../models/ChuCuaHang");
+const YeuCau = require("../models/YeuCauLamViec");
+const NguoiLam = require("../models/NguoiLam");
 
 var router = express.Router();
 
@@ -50,7 +52,33 @@ router.get("/timkiem/:macch", function (req, res, next) {
       res.status(500).json({ error: "Lỗi tìm kiếm" });
     });
 });
+/* GET Tìm nhân viên theo cửa hàng */
+router.get("/nhanviencuahang/:macuahang", function (req, res, next) {
+  const macuahang = req.params.macuahang;
+  YeuCau.findAll({
+    where: { macuahang: macuahang, trangthai: "lamviec" },
+  })
+    .then((data) => {
+      const promises = data.map((element) => {
+        return NguoiLam.findOne({
+          where: {
+            id: element.manl,
+          },
+        });
+      });
 
+      return Promise.all(promises);
+    })
+    .then((results) => {
+      const danhsachnhanvien = results.filter((nguoilam) => nguoilam !== null);
+      console.log(danhsachnhanvien);
+      res.status(200).json(danhsachnhanvien);
+    })
+    .catch((error) => {
+      console.error("Tìm dữ liệu thất bại:", error);
+      res.status(500).json({ error: "Thêm dữ liệu thất bại" });
+    });
+});
 /* POST them cua hang*/
 router.post("/themcuahang", function (req, res, next) {
   const { macch, tencuahang, diachi, sdt, email, anhlogo } = req.body;
