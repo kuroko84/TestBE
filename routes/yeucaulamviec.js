@@ -7,10 +7,16 @@ var router = express.Router();
 router.get("/tatca", function (req, res, next) {
   YeuCau.findAll()
     .then((data) => {
-      console.log(data);
-      res.json(data);
+      console.log("Tìm kiếm thành công");
+      res.status(200).json({
+        M: "Tìm kiếm thành công",
+        D: data,
+      });
     })
-    .catch((err) => console.log(err));
+    .catch((error) => {
+      console.error("Tìm kiếm dữ liệu thất bại");
+      res.status(500).json({ M: "Tìm kiếm dữ liệu thất bại", E: error });
+    });
 });
 
 /* GET  */

@@ -10,10 +10,19 @@ var router = express.Router();
 router.get("/tatca", function (req, res, next) {
   ChuCuaHang.findAll()
     .then((data) => {
-      console.log(data);
-      res.json(data);
+      console.log("Tìm kiếm thành công");
+      res.status(200).json({
+        M: "Tìm kiếm thành công",
+        D: data,
+      });
     })
-    .catch((err) => console.log(err));
+    .catch((error) => {
+      console.log("Lỗi tìm kiếm");
+      res.status(500).json({
+        M: "Lỗi tìm kiếm",
+        E: error,
+      });
+    });
 });
 
 /* GET tất cả yêu cầu */
@@ -24,10 +33,26 @@ router.get("/yeucau", function (req, res, next) {
     },
   })
     .then((data) => {
-      console.log(data);
-      res.json(data);
+      console.log("Tìm kiếm thành công");
+      if (data == "") {
+        res.status(200).json({
+          M: "Không có yêu cầu nào",
+          D: data,
+        });
+      } else {
+        res.status(200).json({
+          M: "Tìm kiếm thành công",
+          D: data,
+        });
+      }
     })
-    .catch((err) => console.log(err));
+    .catch((error) => {
+      console.log("Lỗi tìm kiếm");
+      res.status(500).json({
+        M: "Lỗi tìm kiếm",
+        E: error,
+      });
+    });
 });
 
 /* GET tất cả đề nghị */
@@ -38,10 +63,26 @@ router.get("/denghi", function (req, res, next) {
     },
   })
     .then((data) => {
-      console.log(data);
-      res.json(data);
+      console.log("Tìm kiếm thành công");
+      if (data == "") {
+        res.status(200).json({
+          M: "Không có đề nghị nào nào",
+          D: data,
+        });
+      } else {
+        res.status(200).json({
+          M: "Tìm kiếm thành công",
+          D: data,
+        });
+      }
     })
-    .catch((err) => console.log(err));
+    .catch((error) => {
+      console.log("Lỗi tìm kiếm");
+      res.status(500).json({
+        M: "Lỗi tìm kiếm",
+        E: error,
+      });
+    });
 });
 
 /* POST them chu cua hang. */
@@ -58,13 +99,19 @@ router.post("/themchucuahang", function (req, res, next) {
     gioitinh: gioitinh,
     anhdaidien: anhdaidien,
   })
-    .then((cuahang) => {
-      console.log("Thêm dữ liệu thành công:", cuahang);
-      res.status(201).json(cuahang); // Trả về dữ liệu đã tạo thành công
+    .then((data) => {
+      console.log("Thêm dữ liệu thành công");
+      res.status(201).json({
+        M: "Thêm dữ liệu thành công",
+        D: data,
+      });
     })
     .catch((error) => {
-      console.error("Thêm dữ liệu thất bại:", error);
-      res.status(500).json({ error: "Thêm dữ liệu thất bại" }); // Trả về lỗi nếu có
+      console.log("Thêm dữ liệu thất bại");
+      res.status(500).json({
+        M: "Thêm dữ liệu thất bại",
+        E: error,
+      });
     });
 });
 /* POST gửi đề nghị */
@@ -76,8 +123,8 @@ router.post("/guidenghi", function (req, res, next) {
     },
   })
     .then((data) => {
-      console.log("Tìm dữ liệu thành công:", data);
-      //lấy mã người làm đã làm việc tại cấc cửa hàng
+      console.log("Tìm người làm đang làm việc thành công:", data);
+      //lấy mã người làm đã làm việc tại các cửa hàng
       const id_nguoilam = data.map((item) => item.manl);
       const trangthai = "denghi";
       if (!id_nguoilam.includes(manl)) {
@@ -101,8 +148,11 @@ router.post("/guidenghi", function (req, res, next) {
                 { trangthai: "lamviec" },
                 { where: { id: newdata.id } }
               );
-              console.log("Cập nhật thành công");
-              res.status(201).json(data); // Trả về dữ liệu đã tạo thành công
+              console.log("Thêm dữ liệu thành công");
+              res.status(201).json({
+                M: "Thêm dữ liệu thành công",
+                D: newdata,
+              });
             } else {
               //tạo mới đề nghị
               YeuCau.create({
@@ -110,13 +160,19 @@ router.post("/guidenghi", function (req, res, next) {
                 manl: manl,
                 trangthai: trangthai,
               })
-                .then((data) => {
-                  console.log("Thêm dữ liệu thành công:", data);
-                  res.status(201).json(data); // Trả về dữ liệu đã tạo thành công
+                .then((newdata) => {
+                  console.log("Thêm dữ liệu thành công");
+                  res.status(201).json({
+                    M: "Thêm dữ liệu thành công",
+                    D: newdata,
+                  });
                 })
                 .catch((error) => {
-                  console.error("Thêm dữ liệu thất bại:", error);
-                  res.status(500).json({ error: "Thêm dữ liệu thất bại" }); // Trả về lỗi nếu có
+                  console.log("Thêm dữ liệu thất bại");
+                  res.status(500).json({
+                    M: "Thêm dữ liệu thất bại",
+                    E: error,
+                  });
                 });
             }
           })
@@ -126,12 +182,18 @@ router.post("/guidenghi", function (req, res, next) {
           });
       } else {
         console.log("Nhân viên đang làm việc tại cửa hàng");
-        res.status(403).json(data); // Người làm đã làm việc
+        res.status(403).json({
+          M: "Nhân viên đang làm việc tại cửa hàng",
+          E: "Nhân viên đang làm việc",
+        }); // Người làm đã làm việc
       }
     })
     .catch((error) => {
-      console.error("Tìm dữ liệu thất bại:", error);
-      res.status(500).json({ error: "Tìm dữ liệu thất bại" }); // Trả về lỗi nếu có
+      console.log("Thêm dữ liệu thất bại");
+      res.status(500).json({
+        M: "Thêm dữ liệu thất bại",
+        E: error,
+      });
     });
 });
 
@@ -144,22 +206,34 @@ router.post("/phanhoi", function (req, res, next) {
   if (phanhoi) {
     YeuCau.update({ trangthai: "lamviec" }, { where: { id: mayeucau } })
       .then((data) => {
-        console.log("Cập nhật dữ liệu thành công:", data);
-        res.status(201).json(data); // Trả về dữ liệu đã tạo thành công
+        console.log("Thêm dữ liệu thành công");
+        res.status(201).json({
+          M: "Thêm dữ liệu thành công",
+          D: data,
+        });
       })
       .catch((error) => {
-        console.error("Thêm dữ liệu thất bại:", error);
-        res.status(500).json({ error: "Thêm dữ liệu thất bại" }); // Trả về lỗi nếu có
+        console.log("Thêm dữ liệu thất bại");
+        res.status(500).json({
+          M: "Thêm dữ liệu thất bại",
+          E: error,
+        });
       });
   } else {
     YeuCau.update({ trangthai: "huy" }, { where: { id: mayeucau } })
       .then((data) => {
-        console.log("Cập nhật dữ liệu thành công:", data);
-        res.status(201).json(data); // Trả về dữ liệu đã tạo thành công
+        console.log("Cập nhật dữ liệu thành công");
+        res.status(201).json({
+          M: "Cập nhật dữ liệu thành công",
+          D: data,
+        });
       })
       .catch((error) => {
-        console.error("Thêm dữ liệu thất bại:", error);
-        res.status(500).json({ error: "Thêm dữ liệu thất bại" }); // Trả về lỗi nếu có
+        console.log("Cập nhật dữ liệu thất bại");
+        res.status(500).json({
+          M: "Cập nhât dữ liệu thất bại",
+          E: error,
+        });
       });
   }
 });
@@ -183,21 +257,33 @@ router.post("/chamduthopdong", function (req, res, next) {
       if (trangthainl == "lamviec") {
         YeuCau.update({ trangthai: "huy" }, { where: { manl: manl } })
           .then((data) => {
-            console.log("Cập nhật dữ liệu thành công:", data);
-            res.status(201).json(data); // Trả về dữ liệu đã tạo thành công
+            console.log("Cập nhật dữ liệu thành công");
+            res.status(201).json({
+              M: "Cập nhật dữ liệu thành công",
+              D: data,
+            });
           })
           .catch((error) => {
-            console.error("Thêm dữ liệu thất bại:", error);
-            res.status(500).json({ error: "Thêm dữ liệu thất bại" }); // Trả về lỗi nếu có
+            console.log("Cập nhật dữ liệu thất bại");
+            res.status(500).json({
+              M: "Cập nhât dữ liệu thất bại",
+              E: error,
+            });
           });
       } else {
         console.log("Nhân viên chưa có việc làm");
-        res.status(404).json({ error: "Sửa dữ liệu thất bại" }); // Trả về lỗi nếu có
+        res.status(404).json({
+          M: "Nhân viên chưa có việc làm",
+          E: "Cập nhật dữ liệu không thành công",
+        });
       }
     })
     .catch((error) => {
-      console.error("Cập nhật liệu thất bại:", error);
-      res.status(500).json({ error: "Thêm dữ liệu thất bại" }); // Trả về lỗi nếu có
+      console.log("Cập nhật dữ liệu thất bại");
+      res.status(500).json({
+        M: "Cập nhât dữ liệu thất bại",
+        E: error,
+      });
     });
 });
 

@@ -32,11 +32,11 @@ router.get("/tatca", function (req, res, next) {
         D: data,
       });
     })
-    .catch((err) => {
+    .catch((error) => {
       console.log("Lỗi tìm kiếm");
       res.status(500).json({
         M: "Lỗi tìm kiếm",
-        E: err,
+        E: error,
       });
     });
 });

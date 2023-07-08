@@ -66,12 +66,18 @@ router.post("/dangky", function (req, res, next) {
         anhdaidien: anhdaidien,
       })
         .then((data) => {
-          console.log("Tạo mới chủ cửa hàng thành công:", data);
-          res.status(201).json(data); // Trả về dữ liệu đã tạo thành công
+          console.log("Tạo mới chủ cửa hàng thành công");
+          res.status(201).json({
+            M: "Tạo mới chủ cửa hàng thành công",
+            D: data,
+          });
         })
         .catch((error) => {
-          console.error("Thêm dữ liệu thất bại:", error);
-          res.status(500).json({ error: "Thêm dữ liệu thất bại" }); // Trả về lỗi nếu có
+          console.error("Thêm dữ liệu thất bại");
+          res.status(500).json({
+            M: "Thêm dữ liệu thất bại",
+            E: error,
+          });
         });
     } else {
       NguoiLam.create({
@@ -83,13 +89,19 @@ router.post("/dangky", function (req, res, next) {
         gioitinh: gioitinh,
         anhdaidien: anhdaidien,
       })
-        .then((nguoilam) => {
-          console.log("Thêm dữ liệu thành công:", nguoilam);
-          res.status(201).json(nguoilam); // Trả về dữ liệu đã tạo thành công
+        .then((data) => {
+          console.log("Tạo mới người làm tự do thành công");
+          res.status(201).json({
+            M: "Tạo mới người làm tự do thành công",
+            D: data,
+          });
         })
         .catch((error) => {
-          console.error("Thêm dữ liệu thất bại:", error);
-          res.status(500).json({ error: "Thêm dữ liệu thất bại" }); // Trả về lỗi nếu có
+          console.error("Thêm dữ liệu thất bại");
+          res.status(500).json({
+            M: "Thêm dữ liệu thất bại",
+            E: error,
+          });
         });
     }
   });
@@ -121,18 +133,21 @@ router.post("/dangnhap_email", function (req, res, next) {
             } else {
               console.log("Password không khớp");
             }
-            console.log("Đăng nhập thành công:", pass, hashedPassword);
-            res.status(201).json(data); // Trả về dữ liệu đã tạo thành công
+            console.log("Đăng nhập thành công");
+            res.status(200).json({ M: "Đăng nhập thành công", D: data }); // Trả về dữ liệu đã tạo thành công
           }
         );
       } else {
         console.log("Email chưa xác thực:");
-        res.status(201).json(data); // Trả về dữ liệu đã tạo thành công
+        res.status(403).json({
+          M: "Email chưa được xác thực",
+          D: data,
+        }); // Trả về dữ liệu đã tạo thành công
       }
     })
     .catch((error) => {
-      console.error("Xác thực lỗi:", error);
-      res.status(500).json({ error: "Lỗi xác thực" }); // Trả về lỗi nếu có
+      console.log("Lỗi đăng nhập");
+      res.status(500).json({ M: "Lỗi đăng nhập", E: error });
     });
 });
 
@@ -163,18 +178,21 @@ router.post("/dangnhap_sdt", function (req, res, next) {
             } else {
               console.log("Password không khớp");
             }
-            console.log("Đăng nhập thành công:", pass, hashedPassword);
-            res.status(201).json(data); // Trả về dữ liệu đã tạo thành công
+            console.log("Đăng nhập thành công");
+            res.status(200).json({ M: "Đăng nhập thành công", D: data }); // Trả về dữ liệu đã tạo thành công
           }
         );
       } else {
         console.log("Email chưa xác thực:");
-        res.status(201).json(data); // Trả về dữ liệu đã tạo thành công
+        res.status(403).json({
+          M: "Email chưa được xác thực",
+          D: data,
+        }); // Trả về dữ liệu đã tạo thành công
       }
     })
     .catch((error) => {
-      console.error("Xác thực lỗi:", error);
-      res.status(500).json({ error: "Lỗi xác thực" }); // Trả về lỗi nếu có
+      console.log("Lỗi đăng nhập");
+      res.status(500).json({ M: "Lỗi đăng nhập", E: error });
     });
 });
 
@@ -184,12 +202,12 @@ router.put("/xacthuc/:email", function (req, res, next) {
   console.log(email);
   DangNhap.update({ trangthai: "1" }, { where: { email: email } })
     .then((data) => {
-      console.log("Xác thực thành công:", data);
-      res.status(201).json(data); // Trả về dữ liệu đã tạo thành công
+      console.log("Xác thực thành công");
+      res.status(200).json({ M: "Xác thực thành công", D: data }); // Trả về dữ liệu đã tạo thành công
     })
     .catch((error) => {
-      console.error("Xác thực lỗi:", error);
-      res.status(500).json({ error: "Lỗi xác thực" }); // Trả về lỗi nếu có
+      console.error("Xác thực lỗi");
+      res.status(500).json({ M: "Lỗi xác thực", E: error });
     });
 });
 

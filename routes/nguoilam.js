@@ -11,10 +11,19 @@ var router = express.Router();
 router.get("/tatca", function (req, res, next) {
   NguoiLam.findAll()
     .then((data) => {
-      console.log(data);
-      res.json(data);
+      console.log("Tìm kiếm thành công");
+      res.status(200).json({
+        M: "Tìm kiếm thành công",
+        D: data,
+      });
     })
-    .catch((err) => console.log(err));
+    .catch((error) => {
+      console.log("Lỗi tìm kiếm");
+      res.status(500).json({
+        M: "Lỗi tìm kiếm",
+        E: error,
+      });
+    });
 });
 
 /* GET người làm bằng sdt. */
@@ -24,18 +33,27 @@ router.get("/timkiem/:sdt", function (req, res, next) {
   NguoiLam.findOne({
     where: { sdt: sdt },
   })
-    .then((nguoilam) => {
-      if (nguoilam) {
-        console.log("Tìm kiếm thành công:", nguoilam);
-        res.status(200).json(nguoilam);
+    .then((data) => {
+      if (!data) {
+        console.log("Tìm kiếm thành công");
+        res.status(404).json({
+          M: "Tìm kiếm thành công",
+          E: "Không có người làm tự do",
+        });
       } else {
-        console.log("Không tìm thấy nhân viên với số điện thoại:", sdt);
-        res.status(404).json({ error: "Không tìm thấy nhân viên" });
+        console.log("Tìm kiếm thành công");
+        res.status(200).json({
+          M: "Tìm kiếm thành công",
+          D: data,
+        });
       }
     })
     .catch((error) => {
-      console.error("Lỗi tìm kiếm:", error);
-      res.status(500).json({ error: "Lỗi tìm kiếm" });
+      console.log("Lỗi tìm kiếm");
+      res.status(500).json({
+        M: "Lỗi tìm kiếm",
+        E: error,
+      });
     });
 });
 
@@ -49,12 +67,18 @@ router.get("/denghi/:manl", function (req, res, next) {
     },
   })
     .then((data) => {
-      console.log("Thêm dữ liệu thành công:", data);
-      res.status(201).json(data); // Tìm tạo thành công
+      console.log("Tìm kiếm thành công");
+      res.status(200).json({
+        M: "Tìm kiếm thành công",
+        D: data,
+      });
     })
     .catch((error) => {
-      console.error("Thêm dữ liệu thất bại:", error);
-      res.status(500).json({ error: "Thêm dữ liệu thất bại" }); // Trả về lỗi nếu có
+      console.log("Lỗi tìm kiếm");
+      res.status(500).json({
+        M: "Lỗi tìm kiếm",
+        E: error,
+      });
     });
 });
 
@@ -73,30 +97,49 @@ router.post("/chapnhandenghi", function (req, res, next) {
         //cập nhật lại yêu cầu trùng với đề nghị
         YeuCau.update({ trangthai: "lamviec" }, { where: { id: mayeucau } })
           .then((data) => {
-            console.log("Đã chấp nhận đề nghị", data);
-            res.status(201).json(data); // Trả về dữ liệu đã tạo thành công
+            console.log("Đã chấp nhận đề nghị");
+            res.status(201).json({ M: "Đã chấp nhận đề nghị", D: data }); // Trả về dữ liệu đã tạo thành công
           })
-          .catch((err) => {
-            console.log(err);
-            res.status(500).json({ error: "Thêm dữ liệu thất bại" }); // Trả về lỗi nếu có);
+          .catch((error) => {
+            console.log("Cập nhật dữ liệu thất bại");
+            res.status(500).json({
+              M: "Cập nhật dữ liệu thất bại",
+              E: error,
+            });
           });
       })
       .catch((error) => {
-        console.error("Thêm dữ liệu thất bại:", error);
-        res.status(500).json({ error: "Thêm dữ liệu thất bại" }); // Trả về lỗi nếu có
+        console.log("Cập nhật dữ liệu thất bại");
+        res.status(500).json({
+          M: "Cập nhật dữ liệu thất bại",
+          E: error,
+        });
       });
   } else {
     YeuCau.findOne({
       where: { id: mayeucau },
     })
       .then((data) => {
-        YeuCau.update({ trangthai: "huy" }, { where: { manl: data.manl } });
-        onsole.log("Đã huỷ đề nghị", data);
-        res.status(201).json(data); // Cập nhật thành
+        //cập nhật lại yêu cầu trùng với đề nghị
+        YeuCau.update({ trangthai: "huy" }, { where: { id: mayeucau } })
+          .then((newdata) => {
+            console.log("Đã huỷ đề nghị");
+            res.status(201).json({ M: "Đã huỷ đề nghị", D: newdata }); // Trả về dữ liệu đã tạo thành công
+          })
+          .catch((error) => {
+            console.log("Cập nhật dữ liệu thất bại");
+            res.status(500).json({
+              M: "Cập nhật dữ liệu thất bại",
+              E: error,
+            });
+          });
       })
       .catch((error) => {
-        console.error("Điều chỉnh dữ liệu thất bại:", error);
-        res.status(500).json({ error: "Điều chỉnh dữ liệu thất bại" }); // Trả về lỗi nếu có
+        console.log("Cập nhật dữ liệu thất bại");
+        res.status(500).json({
+          M: "Cập nhật dữ liệu thất bại",
+          E: error,
+        });
       });
   }
 });
@@ -115,13 +158,19 @@ router.post("/themnguoilam", function (req, res, next) {
     gioitinh: gioitinh,
     anhdaidien: anhdaidien,
   })
-    .then((nguoilam) => {
-      console.log("Thêm dữ liệu thành công:", nguoilam);
-      res.status(201).json(nguoilam); // Trả về dữ liệu đã tạo thành công
+    .then((data) => {
+      console.log("Thêm dữ liệu thành công");
+      res.status(201).json({
+        M: "Thêm dữ liệu thành công",
+        D: data,
+      });
     })
     .catch((error) => {
-      console.error("Thêm dữ liệu thất bại:", error);
-      res.status(500).json({ error: "Thêm dữ liệu thất bại" }); // Trả về lỗi nếu có
+      console.log("Thêm dữ liệu thất bại");
+      res.status(500).json({
+        M: "Thêm dữ liệu thất bại",
+        E: error,
+      });
     });
 });
 
@@ -132,38 +181,50 @@ router.post("/guiyeucau", function (req, res, next) {
   const tt1 = "yeucau";
   const tt2 = "denghi";
   const tt3 = "lamviec";
+  const tt4 = "huy";
   //nếu đã tồn tại trong yêu cầu làm việc thì không thêm mới, ngược lại tạo mới 1 yêu cầu
-  const yeucau = YeuCau.findOne({
+  YeuCau.findAll({
     where: {
       [Op.or]: [{ trangthai: tt1 }, { trangthai: tt2 }, { trangthai: tt3 }],
       manl: manl,
-      macuahang: macuahang,
     },
   })
     .then((data) => {
       console.log("Tìm dữ liệu thành công:", data);
-      if (!data) {
+      if (data == "") {
         YeuCau.create({
           macuahang: macuahang,
           manl: manl,
           trangthai: trangthai,
         })
           .then((data) => {
-            console.log("Thêm dữ liệu thành công:", data);
-            res.status(201).json(data); // Trả về dữ liệu đã tạo thành công
+            console.log("Thêm dữ liệu thành công");
+            res.status(201).json({
+              M: "Thêm dữ liệu thành công",
+              D: data,
+            });
           })
           .catch((error) => {
-            console.error("Thêm dữ liệu thất bại:", error);
-            res.status(500).json({ error: "Thêm dữ liệu thất bại" }); // Trả về lỗi nếu có
+            console.log("Thêm dữ liệu thất bại");
+            res.status(500).json({
+              M: "Thêm dữ liệu thất bại",
+              E: error,
+            });
           });
       } else {
-        console.log("Đã Tồn Tại");
-        res.status(201).json(data); // Trả về dữ liệu đã tạo thành công
+        console.log("Đã tồn tại");
+        res.status(201).json({
+          M: "Đã tồn tại",
+          D: data,
+        });
       }
     })
     .catch((error) => {
-      console.error("Tìm dữ liệu thất bại:", error);
-      res.status(500).json({ error: "Tìm dữ liệu thất bại" }); // Trả về lỗi nếu có
+      console.error("Tìm dữ liệu thất bại");
+      res.status(500).json({
+        M: "Tìm dữ liệu thất bại",
+        E: error,
+      });
     });
 });
 
