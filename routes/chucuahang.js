@@ -55,6 +55,22 @@ router.get("/yeucau", function (req, res, next) {
     });
 });
 
+/* GET tất cả yêu cầu làm việc */
+router.get("/tatcayeucaulamviec", function (req, res, next) {
+  YeuCau.findAll()
+    .then((data) => {
+      console.log("Tìm kiếm thành công");
+      res.status(200).json({
+        M: "Tìm kiếm thành công",
+        D: data,
+      });
+    })
+    .catch((error) => {
+      console.error("Tìm kiếm dữ liệu thất bại");
+      res.status(500).json({ M: "Tìm kiếm dữ liệu thất bại", E: error });
+    });
+});
+
 /* GET tất cả đề nghị */
 router.get("/denghi", function (req, res, next) {
   YeuCau.findAll({
